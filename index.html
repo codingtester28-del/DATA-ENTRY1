@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DATA ENTRY Manager - Web</title>
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <!-- Charting Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <!-- Splash Screen / Loading Screen (EXACT PARITY) -->
+  <div id="splash-screen">
+    <div class="morph-container">
+      <div class="morph-shape"></div>
+      <div class="morph-shape"></div>
+      <div class="morph-shape"></div>
+    </div>
+    <div class="splash-content">
+      <h1 class="splash-title">DATA ENTRY</h1>
+      <p class="splash-subtitle">By F Digital Skill</p>
+      <div class="splash-loader">
+        <div class="loader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container untuk Toast Notifikasi CSS -->
+  <div id="toast-container"></div>
+
+  <!-- Mobile Header (Hanya di HP) -->
+  <header class="mobile-header" style="display: none;">
+    <div class="mobile-logo">🚀 DATA ENTRY</div>
+    <button id="btn-toggle-sidebar" class="btn btn-icon-only">☰</button>
+  </header>
+
+  <!-- Overlay Sidebar -->
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+  <!-- Container Utama Aplikasi (Awalnya tersembunyi sampai login sukses) -->
+  <div id="app-container" style="display: none;">
+    <!-- Sidebar Navigasi -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-icon">🚀</div>
+        <h2>DATA ENTRY</h2>
+      </div>
+      <div class="sidebar-clock">
+        <div id="clock-time">00:00:00</div>
+        <div id="clock-date">Memuat tanggal...</div>
+      </div>
+      <ul class="nav-menu">
+        <li id="tab-input" class="active">
+          <span class="icon">📝</span> <span>Form Input</span>
+        </li>
+        <li id="tab-today">
+          <span class="icon">📅</span> <span>Data Hari Ini</span>
+        </li>
+        <li id="tab-productivity">
+          <span class="icon">📈</span> <span>Produktivitas</span>
+        </li>
+        <li id="tab-dashboard">
+          <span class="icon">📊</span> <span>Dashboard</span>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <button id="btn-logout" class="btn btn-logout"
+          style="width: 100%; margin-bottom: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #ff4d4d; border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.3s ease;">🚪
+          Logout</button>
+        <p>Web Version 1.2.0</p>
+      </div>
+    </aside>
+
+    <!-- Konten Utama -->
+        <main class="main-content">
+
+            <!-- Bagian Form -->
+            <section id="section-input" class="section active">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>Input Lead Baru</h1>
+                        <p>Silakan isi data calon leads di bawah ini.</p>
+                    </div>
+                </div>
+                <div class="form-container">
+                    <div class="form-card">
+                        <form id="lead-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="username">Username <span class="required">*</span></label>
+                                    <input type="text" id="username" required placeholder="Contoh: Budi Susanto">
+                                </div>
+                                <div class="form-group">
+                                    <label for="whatsapp">No. WhatsApp <span class="required">*</span></label>
+                                    <input type="text" id="whatsapp" required placeholder="Contoh: 08123456789">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="niche">Niche / Kategori</label>
+                                    <input type="text" id="niche" placeholder="Contoh: Fashion">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gmv">GMV</label>
+                                    <input type="text" id="gmv" placeholder="Contoh: Rp. 1.000.000">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-large">
+                                    <span class="btn-icon">💾</span> Simpan ke Database
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="form-tips">
+                        <h3>💡 Tips Input</h3>
+                        <ul>
+                            <li>Pastikan nomor WhatsApp aktif dan benar.</li>
+                            <li>Gunakan tanda titik (.) untuk ribuan pada GMV.</li>
+                            <li>Tanda (*) menunjukkan kolom wajib diisi.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bagian Data Hari Ini -->
+            <section id="section-today" class="section">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>📅 Data Hari Ini</h1>
+                        <p>Fokus pada pencapaian Anda hari ini.</p>
+                    </div>
+                    <div class="actions">
+                        <button id="btn-refresh-today" class="btn btn-outline" title="Refresh">🔄 Refresh Data</button>
+                        <button id="btn-export-today" class="btn btn-success">📤 Export Data Hari Ini</button>
+                    </div>
+                </div>
+
+                <!-- Today's Special Stats -->
+                <div class="today-stats-grid">
+                    <div class="stat-card time-card">
+                        <div class="stat-icon bg-primary-soft">🚀</div>
+                        <div class="stat-info">
+                            <div class="stat-title">Waktu Mulai Input</div>
+                            <div id="start-time-today" class="time-value">-- : --</div>
+                        </div>
+                    </div>
+                    <div class="stat-card time-card">
+                        <div class="stat-icon bg-success-soft">✨</div>
+                        <div class="stat-info">
+                            <div class="stat-title">Terakhir Input</div>
+                            <div id="last-time-today" class="time-value">-- : --</div>
+                        </div>
+                    </div>
+                    <!-- TOTAL HARI INI STAT -->
+                    <div class="stat-card time-card highlight-card">
+                        <div class="stat-icon bg-indigo-soft">📊</div>
+                        <div class="stat-info">
+                            <div class="stat-title">Total Hari Ini</div>
+                            <div id="total-count-today" class="time-value" style="font-family: inherit;">0 Data</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Jam</th>
+                                    <th>Username</th>
+                                    <th>WhatsApp</th>
+                                    <th>Niche</th>
+                                    <th>GMV</th>
+                                </tr>
+                            </thead>
+                            <tbody id="today-leads-table">
+                                <!-- Data akan dimuat di sini -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bagian Produktivitas -->
+            <section id="section-productivity" class="section">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>📈 Produktivitas Pribadi</h1>
+                        <p>Analisis kinerja dan konsistensi Anda.</p>
+                    </div>
+                    <div class="actions">
+                        <button id="btn-refresh-productivity" class="btn btn-outline">🔄 Refresh Analisis</button>
+                    </div>
+                </div>
+
+                <!-- KPI Productivity Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card prod-kpi-card"
+                        style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: white;">
+                        <div class="stat-icon" style="background: rgba(255,255,255,0.2);">🔥</div>
+                        <div class="stat-info">
+                            <div class="stat-title" style="color: rgba(255,255,255,0.8);">Streak Saat Ini</div>
+                            <div id="prod-streak" class="stat-value">0 Hari</div>
+                        </div>
+                    </div>
+                    <div class="stat-card prod-kpi-card"
+                        style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                        <div class="stat-icon" style="background: rgba(255,255,255,0.2);">📈</div>
+                        <div class="stat-info">
+                            <div class="stat-title" style="color: rgba(255,255,255,0.8);">Rata-rata Harian</div>
+                            <div id="prod-avg" class="stat-value">0 / hari</div>
+                        </div>
+                    </div>
+                    <div class="stat-card prod-kpi-card"
+                        style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                        <div class="stat-icon" style="background: rgba(255,255,255,0.2);">🗓️</div>
+                        <div class="stat-info">
+                            <div class="stat-title" style="color: rgba(255,255,255,0.8);">Total Bulan Ini</div>
+                            <div id="prod-month-total" class="stat-value">0 Data</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <div class="chart-container-card">
+                        <h3>📅 Grafik Data Harian</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="dailyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container-card">
+                        <h3>⏰ Jam Produktif</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="hourlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goal/Progress Footer -->
+                <div class="productivity-footer">
+                    <div class="target-card">
+                        <div class="target-info">
+                            <div class="target-label-group">
+                                <span>Target Harian</span>
+                                <div class="target-input-group">
+                                    <input type="number" id="input-daily-target" value="50" min="1">
+                                    <button id="btn-set-target" class="btn btn-primary btn-xs">Set</button>
+                                </div>
+                            </div>
+                            <span id="target-percentage">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="target-progress-fill" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bagian Dashboard -->
+            <section id="section-dashboard" class="section">
+                <div class="content-header">
+                    <div class="header-title">
+                        <h1>Dashboard Statistik</h1>
+                        <p>Ringkasan data dan performa leads Anda.</p>
+                    </div>
+                    <div class="actions">
+                        <div class="search-box">
+                            <input type="text" id="search-username" placeholder="Cari Username...">
+                            <button id="btn-search" class="btn-icon-only" title="Cari">🔍</button>
+                        </div>
+                        <input type="month" id="filter-date" class="form-control">
+                        <button id="btn-refresh" class="btn btn-outline" title="Refresh">🔄</button>
+                        <div class="btn-group">
+                            <button id="btn-import" class="btn btn-secondary">📥 Import</button>
+                            <button id="btn-export-toggle" class="btn btn-success">📤 Export Ke Excel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Options Panel (Hidden by default) -->
+                <div id="export-panel" class="export-options-card" style="display: none;">
+                    <div class="export-header">
+                        <h3>⚙️ Opsi Ekspor Excel</h3>
+                        <button id="btn-close-export" class="btn-close">✕</button>
+                    </div>
+                    <div class="export-body">
+                        <div class="export-row">
+                            <div class="export-group">
+                                <label>Dari Tanggal:</label>
+                                <input type="date" id="export-start-date">
+                            </div>
+                            <div class="export-group">
+                                <label>Sampai Tanggal:</label>
+                                <input type="date" id="export-end-date">
+                            </div>
+                        </div>
+                        <div class="export-row">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="export-all-check">
+                                <span class="checkmark"></span>
+                                Ekspor Semua Data (Tanpa Filter)
+                            </label>
+                        </div>
+                        <div class="export-actions">
+                            <button id="btn-export-now" class="btn btn-primary">
+                                🚀 Mulai Ekspor (.xlsx)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kartu Statistik -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary-soft">👥</div>
+                        <div class="stat-info">
+                            <div class="stat-title">Total Data</div>
+                            <div class="stat-value" id="stat-total">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-warning-soft">⚠️</div>
+                        <div class="stat-info">
+                            <div class="stat-title">Data Duplikat (Sesi)</div>
+                            <div class="stat-value error-text" id="stat-duplicates">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success-soft">💰</div>
+                        <div class="stat-info">
+                            <div class="stat-title">Perkiraan GMV</div>
+                            <div class="stat-value" id="stat-gmv">Rp 0</div>
+                        </div>
+                    </div>
+                    <!-- FITUR BARU: Perkiraan Penghasilan -->
+                    <div class="stat-card highlight-card">
+                        <div class="stat-icon bg-indigo-soft">💎</div>
+                        <div class="stat-info">
+                            <div class="stat-title">Perkiraan Penghasilan</div>
+                            <div class="stat-value text-indigo" id="stat-income">Rp 0</div>
+                        </div>
+                        <div class="stat-desc">Rp 300 / Data</div>
+                    </div>
+                </div>
+
+                <!-- Tabel Data -->
+                <div class="table-card">
+                    <div class="table-wrapper">
+                        <table id="data-table">
+                            <thead>
+                                <tr>
+                                    <th width="60">No.</th>
+                                    <th>Tanggal</th>
+                                    <th>Username</th>
+                                    <th>WhatsApp</th>
+                                    <th>Niche</th>
+                                    <th>GMV</th>
+                                    <th width="150" style="text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data baris akan muncul di sini -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination Footer -->
+                <div class="pagination-footer">
+                    <div id="pagination-info">Menampilkan data 0 - 0 dari 0</div>
+                    <div class="pagination-btns">
+                        <button id="btn-prev" class="btn btn-outline btn-small">⬅️ Sebelumnya</button>
+                        <span id="current-page-text">Halaman 1</span>
+                        <button id="btn-next" class="btn btn-outline btn-small">Selanjutnya ➡️</button>
+                    </div>
+                </div>
+            </section>
+
+  </div>
+
+  <!-- Layar Login (Hanya muncul jika belum login) -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">🚀</div>
+        <h1>DATA ENTRY</h1>
+        <p>Silakan masuk untuk melanjutkan</p>
+      </div>
+      <form id="login-form">
+        <div class="login-group">
+          <label>Username</label>
+          <input type="text" id="login-username" required placeholder="Masukkan username">
+        </div>
+        <div class="login-group">
+          <label>Password</label>
+          <input type="password" id="login-password" required placeholder="Masukkan password">
+        </div>
+        <div id="login-error" class="login-error" style="display: none;">Username atau password salah!</div>
+        <button type="submit" class="btn btn-primary btn-block">Masuk Sekarang</button>
+      </form>
+      <div class="login-footer">
+        <p>© 2026 F Digital Skill • Web Premium</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+
+</html>

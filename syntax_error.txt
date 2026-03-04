@@ -1,0 +1,31 @@
+﻿node : D:\newe sciprt\e
+xcel\my-web-app\main.js
+:1154
+At line:1 char:1
++ node -c main.js 2>&1 
+| Out-File -Encoding 
+utf8 syntax_error.txt
++ ~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (D:\newe scipr   
+ t\...pp\main.js:11    
+54:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+function updateClock() 
+{
+^
+
+SyntaxError: 
+Identifier 
+'updateClock' has 
+already been declared
+    at checkSyntax (nod
+e:internal/main/check_s
+yntax:74:5)
+
+Node.js v22.17.1
